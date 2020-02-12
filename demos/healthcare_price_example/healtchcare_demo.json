@@ -1,115 +1,91 @@
 {
-    "name":"Healthcare",
-    "description":"Transforms healthcare mostly catagorical data to useable format",
-    "version":"0.0.1",
-    "createdDate":"20190719",
-    "model":{
-        "framework":"Tensorflow",
-        "tags":"serve",
-        "signatureDefs":"def_signature"
-    },
-	"input": [
-    {
-		    "type": "map",
-        "label":"dataIn"
-    }
-	],
-	"structure": [
+  "name":"Healthcare",
+  "description":"Transforms healthcare mostly catagorical data to useable format",
+  "version":"0.0.1",
+  "createdDate":"20190719",
+  "model":{
+      "framework":"Tensorflow",
+      "tags":"serve",
+      "signatureDefs":"def_signature"
+  },
+"input": [
+  {
+      "type": "unkown",
+      "label":"dataIn"
+  }
+],
+"structure": [
+                {
+                  "operation":"replaceValue",
+                  "input":
                   {
-                    
-                    "operation":"replaceValue",
-                    "input":
-                    {
-                      "data":"$dataIn",
-                      "replaceMap":{"Yes":1,"No":0}
-                    },
-                    "params":{"col":
-                      [
-                        "cancer",
-                        "heartdisease",
-                        "cholesterol",
-                        "diabetes",
-                        "highbloodpressure",
-                        "smoker"
-                        ]},
-                    "output":"datatemp"
+                    "data":"$dataIn",
+                    "replaceMap":{"Yes":1,"No":0}
                   },
+                  "params":{"col":
+                    [
+                      "cancer",
+                      "heartdisease",
+                      "cholesterol",
+                      "diabetes",
+                      "highbloodpressure",
+                      "smoker"
+                      ]},
+                  "output":"datatemp"
+                },
+                {
+                  "operation":"replaceValue",
+                  "input":
                   {
-                    "operation":"replaceValue",
-                    "input":
-                    {
-                      "data":"$dataIn",
-                      "replaceMap":{"Working":1,"NotWorking":0}
-                    },
-                    "params":{"col":"currentlyworking"},
-                    "output":"datatemp"
+                    "data":"$datatemp",
+                    "replaceMap":{"Working":1,"NotWorking":0}
                   },
-                  {
-                    "operation":"normalize",
-                    "input":{
-                      "data":"$datatemp['age']",
-                      "value":100,
-                      "minvalue":18
-                    },
-                    "output":"datatemp['age']"
+                  "params":{"col":"currentlyworking"},
+                  "output":"datatemp"
+                },
+                {
+                  "operation":"normalize",
+                  "input":{
+                    "data":"$datatemp['age']",
+                    "value":100,
+                    "minvalue":18
                   },
-                  {
-                    
-                    "operation":"normalize",
-                    "input":{
-                      "data":"$datatemp['bmi']",
-                      "value":60,
-                      "minvalue":15
-                    },
-                    "output":"datatemp['bmi']"
+                  "output":"datatemp['age']"
+                },
+                {
+                  "operation":"normalize",
+                  "input":{
+                    "data":"$datatemp['bmi']",
+                    "value":60,
+                    "minvalue":15
                   },
-                  {
-                    "operation":"oneHotEncoding",
-                    "input":{"data":"$datatemp"},
-                    "params":{
-                      "inputColumns": "maritalstatus",
-                      "keepOrig":false
-                    },
-                    "output":"datatemp"
+                  "output":"datatemp['bmi']"
+                },
+                {
+                  "operation":"oneHotEncoding",
+                  "input":{"data":"$datatemp"},
+                  "params":{
+                    "inputColumns": ["maritalstatus", "state", "product", "occupation"],
+                    "keepOrig":false
                   },
-                  {
-                    "operation":"oneHotEncoding",
-                    "input":{"data":"$datatemp"},
-                    "params":{
-                      "inputColumns": "state",
-                      "keepOrig":false
-                    },
-                    "output":"datatemp"
+                  "output":"datatemp"
+                },
+                {
+                  "operation":"dropCol",
+                  "input" :{
+                    "data": "$datatemp"
                   },
-                  {
-                    "operation":"oneHotEncoding",
-                    "input":{"data":"$datatemp"},
-                    "params":{
-                      "inputColumns": "product",
-                      "keepOrig":false
-                    },
-                    "output":"datatemp"
+                  "params":{
+                    "col": ["city","lattitude","longitude","zipcode","year"],
+                    "separateOut":false
                   },
-                  {
-                    "operation":"oneHotEncoding",
-                    "input":{"data":"$datatemp"},
-                    "params":{
-                      "inputColumns": "occupation",
-                      "keepOrig":false
-                    },
-                    "output":"datatemp"
-                  },
-                  {
-                    "operation":"dropCol",
-                    "params":{
-                      "col": ["city","lattitude","longitude","zipcode","year"],
-                      "separateOut":false
-                    },
-                    "output":"datatemp"
-                  }
-             ],
-	"output": {
-    "type": "map",
-    "data":{"output":"$datatemp"}
-	}
+                  "output":"datatemp"
+                }
+           ],
+"output": {
+  "type": "map",
+  "data":{
+    "output":"$datatemp"
+  }
+}
 }
