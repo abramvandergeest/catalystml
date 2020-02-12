@@ -20,7 +20,7 @@
     {
       "operation":"norm",
       "input":{"data":"$input"},
-      "params":{"axis":0},
+      "params":{"axis":1},
       "output":"mag"
     },
     {
@@ -40,7 +40,7 @@
       "output":"flat"
     },
     {
-      "operation":"table2Map",
+      "operation":"table2map",
       "input":{
         "table":"$flat",
         "colKeys":["0_0","1_0","2_0","amag_0","0_1","1_1","2_1","amag_1","0_2","1_2","2_2","amag_2"]
